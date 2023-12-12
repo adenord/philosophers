@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 11:36:44 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/05 17:38:16 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/12 14:42:38 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static int	philos_fork_malloc(t_data *datas)
 		printf("Error : malloc failed !\n");
 		return (0);
 	}
+	memset(datas->philos, 0, sizeof(t_philo) * datas->number_philo);
 	datas->forks = malloc(sizeof(t_fork) * datas->number_philo);
 	if (!datas->forks)
 	{
@@ -27,10 +28,11 @@ static int	philos_fork_malloc(t_data *datas)
 		printf("Error : malloc failed !\n");
 		return (0);
 	}
+	memset(datas->forks, 0, sizeof(t_fork) * datas->number_philo);
 	return (1);
 }
 
-static int	mutex_init(t_data *datas)
+static int	forks_init(t_data *datas)
 {
 	int	i;
 
@@ -59,11 +61,16 @@ static void	philo_init(t_data *datas)
 		datas->philos[i].is_full = false;
 		datas->philos[i].number_meals = 0;
 		datas->philos[i].last_meal = 0;
-		if (i + 1 < datas->number_philo)
-			datas->philos[i].left = datas->forks[i + 1];
-		else
-			datas->philos[i].left = datas->forks[0];
-		datas->philos[i].right = datas->forks[i];
+		datas->philos[i].datas = datas;
+		pthread_mutex_init(&datas->philos->philo_mtx, NULL);
+		datas->philos[i].first = &datas->forks[(i + 1) % datas->number_philo];
+		datas->philos[i].second = &datas->forks[i];
+		if (datas->philos[i].id % 2 == 0)
+		{
+			datas->philos[i].first = &datas->forks[i];
+			datas->philos[i].second = \
+			&datas->forks[(i + 1) % datas->number_philo];
+		}
 	}
 }
 
@@ -78,9 +85,12 @@ int	data_init(t_data *datas, int argc, char **argv)
 	else
 		datas->number_cycles = -1;
 	datas->end_of_simulation = false;
+	datas->everybody_ready = false;
+	pthread_mutex_init(&datas->table_mtx, NULL);
+	pthread_mutex_init(&datas->write_mtx, NULL);
 	if (!philos_fork_malloc(datas))
 		return (0);
-	if (!mutex_init(datas))
+	if (!forks_init(datas))
 		return (0);
 	philo_init(datas);
 	return (1);

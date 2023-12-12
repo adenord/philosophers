@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/04 18:11:23 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/05 11:30:11 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/11 16:07:53 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static long	elapsed_time(t_time start, t_time end)
 	return ((end.tv_sec - start.tv_sec) * 1e6 + (end.tv_usec - start.tv_usec));
 }
 
-void	custom_sleep(long wait_time)
+void	custom_sleep(long wait_time, t_data *datas)
 {
 	t_time	start_sleep;
 	t_time	after_sleep;
@@ -28,10 +28,12 @@ void	custom_sleep(long wait_time)
 	elapsed_t = 0;
 	while (elapsed_t < wait_time)
 	{
+		if (simulation_finished(datas))
+			break ;
 		gettimeofday(&after_sleep, NULL);
 		elapsed_t = elapsed_time(start_sleep, after_sleep);
 		rtts = wait_time - elapsed_t;
-		if (rtts > 20)
+		if (rtts > 200)
 			usleep(rtts / 2);
 	}
 }

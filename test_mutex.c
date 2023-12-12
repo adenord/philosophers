@@ -6,13 +6,14 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/01 17:42:04 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/05 08:53:13 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/05 18:39:33 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <stdlib.h>
 
 typedef struct s_data
 {
@@ -24,6 +25,7 @@ t_data	*init(int i)
 {
 	t_data	*data;
 
+	data = (t_data *)malloc(sizeof(t_data));
 	data->test = i;
 	pthread_mutex_init(&data->guardian, NULL);
 	return (data);

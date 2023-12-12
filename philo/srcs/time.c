@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers.c                                     :+:      :+:    :+:   */
+/*   time.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/05 09:52:44 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/12 12:47:25 by adenord          ###   ########.fr       */
+/*   Created: 2023/12/06 10:14:58 by adenord           #+#    #+#             */
+/*   Updated: 2023/12/06 10:23:55 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-int	main(int argc, char **argv)
+long	gettime(t_time_code code)
 {
-	t_data	datas;
+	t_time	now;
 
-	if (!check_format(argc, argv))
-		return (1);
-	if (!data_init(&datas, argc, argv))
-		return (1);
-	if (!hungries(&datas))
-		return (1);
-	clean_mess(&datas, -1);
-	return (0);
+	gettimeofday(&now, NULL);
+	if (code == SECONDS)
+		return (now.tv_sec + (now.tv_usec / 1e6));
+	else if (code == MILLISECONDS)
+		return ((now.tv_sec * 1e3) + (now.tv_usec / 1e3));
+	else if (code == MICROSECONDS)
+		return ((now.tv_sec * 1e6) + now.tv_usec);
+	else
+		return (-1);
 }
