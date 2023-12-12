@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 19:16:20 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/12 14:43:24 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/12 16:58:10 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	hungries(t_data *datas)
 		pthread_create(&datas->philos[0].thread_id, NULL, \
 		(*philo_alone), &datas->philos[0]);
 	else if (!init_threads(datas))
-		return (1);
+		return (0);
 	pthread_create(&datas->checker, NULL, (*checker_routine), datas);
 	datas->simulation_start = gettime(MILLISECONDS);
 	set_bool(&datas->table_mtx, &datas->everybody_ready, true);
@@ -48,5 +48,5 @@ int	hungries(t_data *datas)
 		pthread_join(datas->philos[i].thread_id, NULL);
 	set_bool(&datas->table_mtx, &datas->end_of_simulation, true);
 	pthread_join(datas->checker, NULL);
-	return (0);
+	return (1);
 }
