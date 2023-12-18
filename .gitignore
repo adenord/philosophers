@@ -1,8 +1,6 @@
 compile_flags.txt
 philo_testing
 test_mutex.c
-philo
-philo_bonus
 philo.a
 *.a
 *.o
