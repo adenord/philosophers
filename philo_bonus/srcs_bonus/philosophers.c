@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:52:44 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/18 15:53:03 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/18 18:04:17 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,6 @@ int	main(int argc, char **argv)
 		return (1);
 	if (!hungries(&datas))
 		return (1);
-	// clean_mess(&datas, -1);
+	free(datas.philos);
 	return (0);
 }

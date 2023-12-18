@@ -6,17 +6,18 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 11:11:42 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/18 17:10:13 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/18 18:37:59 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-static void	safe_sema_handler(int status)
+static void	safe_sema_handler(int status, t_data *data)
 {
 	if (status == 0)
 		return ;
-	else if (errno == EINVAL)
+	free(data->philos);
+	if (errno == EINVAL)
 		error_exit("sem is not a valid semaphore descriptor.");
 	else if (errno == EAGAIN)
 		error_exit("The semaphore is already locked.");
@@ -34,22 +35,23 @@ static void	safe_sema_handler(int status)
 		error_exit("Unknown ERRNO (safe_sema)");
 }
 
-void	safe_sema(t_sema_code code, void *sem)
+void	safe_sema(t_sema_code code, void *sem, t_data *data)
 {
 	if (code == CLOSE)
-		safe_sema_handler(sem_close(sem));
+		safe_sema_handler(sem_close(sem), data);
 	else if (code == POST)
-		safe_sema_handler(sem_post(sem));
+		safe_sema_handler(sem_post(sem), data);
 	else if (code == WAIT)
-		safe_sema_handler(sem_wait(sem));
+		safe_sema_handler(sem_wait(sem), data);
 	else if (code == UNLINK)
 		sem_unlink((const char *)sem);
 	else
 		error_exit("Invalid opcode for sema operation");
 }
 
-static void	safe_sema_open_handler(void)
+static void	safe_sema_open_handler(t_data *datas)
 {
+	free(datas->philos);
 	if (errno == EACCES)
 		error_exit("The required permissions are denied for the given flags");
 	else if (errno == EEXIST)
@@ -65,7 +67,7 @@ static void	safe_sema_open_handler(void)
 	else if (errno == ENAMETOOLONG)
 		error_exit("name exceeded PSEMNAMLEN characters.");
 	else if (errno == ENFILE)
-		error_exit("Too many semaphores or file descriptors are open on the system.");
+		error_exit("Too many semaphores or fd are open on the system.");
 	else if (errno == ENOENT)
 		error_exit("O_CREAT is not set and the named semaphore does not exist");
 	else if (errno == ENOSPC)
@@ -75,18 +77,13 @@ static void	safe_sema_open_handler(void)
 		error_exit("Unknown ERRNO (safe_sema_open)");
 }
 
-sem_t	*safe_sema_open(char *name, int oflag, mode_t perm, unsigned int value)
+sem_t	*safe_sema_open(char *name, t_data *datas, mode_t perm, \
+		unsigned int value)
 {
 	sem_t	*ret;
 
-	ret = NULL;
-	if (oflag == O_CREAT)
-		ret = sem_open(name, oflag, perm, value);
-	else if (oflag == O_EXCL)
-		ret = sem_open(name, oflag);
-	else
-		error_exit("Wrong oflag for sem_open !");
+	ret = sem_open(name, O_CREAT, perm, value);
 	if (ret == SEM_FAILED)
-		safe_sema_open_handler();
+		safe_sema_open_handler(datas);
 	return (ret);
 }

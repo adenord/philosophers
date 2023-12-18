@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 14:07:07 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/18 17:20:24 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/18 22:49:14 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,19 +20,22 @@ void	*checker_routine(void *arg)
 	custom_sleep(1000);
 	while (!philo->is_dead)
 	{
-		if (gettime(MILLISECONDS) - philo->last_meal > (philo->datas->time_to_die / 1000))
+		if (gettime(MILLISECONDS) - philo->last_meal > \
+			(philo->datas->time_to_die / 1e3))
 		{
+			safe_sema(WAIT, philo->datas->stop, philo->datas);
 			write_state(DIED, philo);
 			exit(1);
 		}
-	} return (NULL);
+	}
+	return (NULL);
 }
 
 static void	eat_routine(t_philo *philo)
 {
-	safe_sema(WAIT, philo->datas->forks);
+	safe_sema(WAIT, philo->datas->forks, philo->datas);
 	write_state(TAKE_FIRST_FORK, philo);
-	safe_sema(WAIT, philo->datas->forks);
+	safe_sema(WAIT, philo->datas->forks, philo->datas);
 	write_state(TAKE_SECOND_FORK, philo);
 	philo->last_meal = gettime(MILLISECONDS);
 	philo->number_meals++;
@@ -40,16 +43,18 @@ static void	eat_routine(t_philo *philo)
 	custom_sleep(philo->datas->time_to_eat);
 	if (philo->number_meals == philo->datas->number_cycles)
 		philo->is_full = true;
-	safe_sema(POST, philo->datas->forks);
-	safe_sema(POST, philo->datas->forks);
+	safe_sema(POST, philo->datas->forks, philo->datas);
+	safe_sema(POST, philo->datas->forks, philo->datas);
 }
 
 void	dinner_routine(t_philo *philo)
 {
 	philo->last_meal = philo->datas->simulation_start;
-	safe_thread(CREATE, &philo->thread_id, (*checker_routine), philo);
+	safe_thread(CREATE, philo->datas, (*checker_routine), philo);
 	while (true)
 	{
+		safe_sema(WAIT, philo->datas->stop, philo->datas);
+		safe_sema(POST, philo->datas->stop, philo->datas);
 		eat_routine(philo);
 		write_state(SLEEPING, philo);
 		custom_sleep(philo->datas->time_to_sleep);
@@ -60,7 +65,7 @@ void	dinner_routine(t_philo *philo)
 			break ;
 		}
 	}
-	safe_thread(JOIN, &philo->thread_id, NULL, NULL);
+	safe_thread(JOIN, philo->datas, NULL, NULL);
 	exit(1);
 }
 

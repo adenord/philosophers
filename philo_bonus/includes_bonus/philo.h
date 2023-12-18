@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:48:32 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/18 15:32:38 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/18 18:52:30 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,7 @@
 # include <semaphore.h>
 # include <errno.h>
 # include <signal.h>
-/*
-* RESET
-* RED
-* GREEN
-* YELLOW
-* MAGENTA
-* CYAN
-* BOLD
-*/
+
 # define RST    "\033[0m"
 # define RED	"\033[1;31m"
 # define G      "\033[1;32m"
@@ -153,19 +145,15 @@ long	ft_atol(const char *str);
 long	gettime(t_time_code code);
 
 //cleaners
-void	clean_mess(t_data *datas, int last);
-void	wash_it(t_data *datas, int last);
 void	error_exit(char *e_str);
 
-//safe_mutex
-void	safe_mutex(pthread_mutex_t *mtx, t_mtx_code code);
-
 //safe_thread
-void	safe_thread(t_thread_code code, pthread_t *thread, 
-		void *(*f)(void *), void *arg);
+void	safe_thread(t_thread_code code, t_data *datas, \
+	void *(*f)(void *), void *arg);
 
 //safe_sema
-void	safe_sema(t_sema_code code, void *sem);
-sem_t	*safe_sema_open(char *name, int oflag, mode_t perm, unsigned int value);
+void	safe_sema(t_sema_code code, void *sem, t_data *data);
+sem_t	*safe_sema_open(char *name, t_data *datas, mode_t perm, \
+		unsigned int value);
 
 #endif

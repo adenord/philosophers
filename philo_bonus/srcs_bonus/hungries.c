@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 19:16:20 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/18 17:17:51 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/18 18:32:39 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ static void	stop_child(t_data *datas)
 	int	i;
 	int	status;
 
-	i = 0;
-	status = 0;
-	while (i < datas->number_philo)
+	i = -1;
+	status = 1;
+	while (++i < datas->number_philo)
 	{
 		waitpid(-1, &status, 0);
 		if (status != 0)
@@ -29,14 +29,13 @@ static void	stop_child(t_data *datas)
 				kill(datas->philos[i].pid, SIGKILL);
 			break ;
 		}
-		i++;
 	}
-	safe_sema(CLOSE, datas->stop);
-	safe_sema(CLOSE, datas->forks);
-	safe_sema(CLOSE, datas->write);
-	safe_sema(UNLINK, "stop");
-	safe_sema(UNLINK, "forks");
-	safe_sema(UNLINK, "write");
+	safe_sema(CLOSE, datas->stop, datas);
+	safe_sema(CLOSE, datas->forks, datas);
+	safe_sema(CLOSE, datas->write, datas);
+	safe_sema(UNLINK, "stop", datas);
+	safe_sema(UNLINK, "forks", datas);
+	safe_sema(UNLINK, "write", datas);
 }
 
 static void	start_process(t_data *datas)

@@ -6,16 +6,17 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 10:51:01 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/13 11:09:33 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/18 18:55:37 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-static void	error_thread_handler(int status, t_thread_code code)
+static void	error_thread_handler(int status, t_thread_code code, t_data *datas)
 {
 	if (status == 0)
 		return ;
+	free(datas->philos);
 	if (status == EAGAIN)
 		error_exit("The system lacked the necessary resources to create another\
 thread, or the system-imposed limit on the total number of threads in a process\
@@ -36,15 +37,18 @@ thread, or the system-imposed limit on the total number of threads in a process\
  the calling thread.");
 }
 
-void	safe_thread(t_thread_code code, pthread_t *thread, 
+void	safe_thread(t_thread_code code, t_data *datas, \
 		void *(*f)(void *), void *arg)
 {
 	if (code == CREATE)
-		error_thread_handler(pthread_create(thread, NULL, (*f), arg), code);
+		error_thread_handler(pthread_create(&datas->philos->thread_id, \
+		NULL, (*f), arg), code, datas);
 	else if (code == JOIN)
-		error_thread_handler(pthread_join(*thread, NULL), code);
+		error_thread_handler(pthread_join(datas->philos->thread_id, NULL), \
+		code, datas);
 	else if (code == DETACH)
-		error_thread_handler(pthread_detach(*thread), code);
+		error_thread_handler(pthread_detach(datas->philos->thread_id), \
+		code, datas);
 	else
 		error_exit("Invalid code for safe_thread function");
 }

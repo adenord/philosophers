@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 11:36:44 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/18 17:09:49 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/18 19:05:14 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ static void	philo_init(t_data *datas)
 
 static void	init_semaphores(t_data *datas)
 {
-	safe_sema(UNLINK, "stop");
-	safe_sema(UNLINK, "forks");
-	safe_sema(UNLINK, "write");
-	datas->stop = safe_sema_open("stop", O_CREAT, 0600, 0);
-	datas->write = safe_sema_open("write", O_CREAT, 0600, 1);
-	datas->forks = safe_sema_open("forks", O_CREAT, 0600, datas->number_philo);
+	safe_sema(UNLINK, "stop", datas);
+	safe_sema(UNLINK, "forks", datas);
+	safe_sema(UNLINK, "write", datas);
+	datas->stop = safe_sema_open("stop", datas, 0600, 1);
+	datas->write = safe_sema_open("write", datas, 0600, 1);
+	datas->forks = safe_sema_open("forks", datas, 0600, datas->number_philo);
 }
 
 int	data_init(t_data *datas, int argc, char **argv)
