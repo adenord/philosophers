@@ -1,5 +1,0 @@
--Wall
--Wextra
--Werror
--I
-philo/includes/

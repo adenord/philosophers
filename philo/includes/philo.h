@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:48:32 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/12 14:40:13 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/14 16:59:55 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <sys/time.h>
-# include <pthread.h>
 # include <limits.h>
 # include <stdbool.h>
 # include <string.h>
