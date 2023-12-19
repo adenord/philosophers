@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:48:32 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/18 18:52:30 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/19 10:19:33 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ struct s_philo
 	int				number_meals;
 	long			last_meal;
 	bool			is_full;
-	bool			is_dead;
 	t_data			*datas;
 	pthread_t		thread_id;
 };
@@ -115,28 +114,13 @@ int		data_init(t_data *datas, int argc, char **argv);
 int		hungries(t_data *datas);
 
 //routines
-void	*checker_routine(void *data);
-void	*philo_alone(void *data);
 void	dinner_routine(t_philo *philo);
-void	thinking_routine(t_philo *philo, bool simulation_started);
 
 //write
 void	write_state(t_philo_state state, t_philo *philo);
 
-//utils
-void	wait_every_philos(t_data *datas);
-void	force_odd_to_think(t_philo *philo);
-bool	death(t_philo *philo);
-
-//access
-bool	get_bool(pthread_mutex_t *mtx, bool *toget);
-void	set_bool(pthread_mutex_t *mtx, bool *toset, bool value);
-long	get_long(pthread_mutex_t *mtx, long *toget);
-void	set_long(pthread_mutex_t *mtx, long *toset, long value);
-bool	simulation_finished(t_data *datas);
-
 //custom_sleep
-void	custom_sleep(long wait_time);//, t_data *datas);
+void	custom_sleep(long wait_time);
 
 //ft_atol
 long	ft_atol(const char *str);

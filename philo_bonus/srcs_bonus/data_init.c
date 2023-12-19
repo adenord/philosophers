@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 11:36:44 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/18 19:05:14 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/19 10:17:01 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ static void	philo_init(t_data *datas)
 	{
 		datas->philos[i].id = i + 1;
 		datas->philos[i].is_full = false;
-		datas->philos[i].is_dead = false;
 		datas->philos[i].number_meals = 0;
 		datas->philos[i].last_meal = 0;
 		datas->philos[i].datas = datas;
