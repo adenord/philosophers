@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:48:32 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/19 15:25:23 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/19 15:34:21 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <semaphore.h>
 # include <errno.h>
 # include <signal.h>
+# include <sys/wait.h>
 
 # define RST    "\033[0m"
 # define RED	"\033[1;31m"
