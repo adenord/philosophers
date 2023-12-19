@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 14:07:07 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/19 15:26:46 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/19 23:47:48 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static void	*checker_routine(void *arg)
 	while (true)
 	{
 		if (gettime(MILLISECONDS) - philo->last_meal > \
-			((philo->datas->time_to_die + 6000) / 1e3))
+			(philo->datas->time_to_die / 1e3))
 		{
 			safe_sema(WAIT, philo->datas->stop, philo->datas);
 			write_state(DIED, philo);
@@ -67,8 +67,8 @@ void	dinner_routine(t_philo *philo)
 		;
 	philo->last_meal = philo->datas->simulation_start;
 	safe_thread(CREATE, philo->datas, (*checker_routine), philo);
-	if (philo->id % 2 != 0)
-		custom_sleep(1e3);
+	if (philo->datas->number_philo % 2 == 0 && philo->id % 2 == 0)
+		custom_sleep(3e4);
 	while (true)
 	{
 		safe_sema(WAIT, philo->datas->stop, philo->datas);
@@ -80,6 +80,7 @@ void	dinner_routine(t_philo *philo)
 		== philo->datas->time_to_eat) || (philo->datas->time_to_eat > \
 		philo->datas->time_to_sleep))
 			thinking_routine(philo);
+		thinking_routine(philo);
 		if (philo->is_full)
 			break ;
 	}
