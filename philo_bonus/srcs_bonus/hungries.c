@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 19:16:20 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/19 23:26:44 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/20 11:29:54 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static void	start_process(t_data *datas)
 
 int	hungries(t_data *datas)
 {
-	datas->simulation_start = gettime(MILLISECONDS) + 1e3;
+	datas->simulation_start = gettime(MILLISECONDS);
 	start_process(datas);
 	stop_child(datas);
 	return (1);

@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 14:07:07 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/19 23:47:48 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/21 09:29:01 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ static void	*checker_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	custom_sleep(1000);
 	while (true)
 	{
+		usleep(100);
 		if (gettime(MILLISECONDS) - philo->last_meal > \
 			(philo->datas->time_to_die / 1e3))
 		{
@@ -31,44 +31,28 @@ static void	*checker_routine(void *arg)
 	return (NULL);
 }
 
-static void	thinking_routine(t_philo *philo)
-{
-	long	t_think;
-
-	write_state(THINKING, philo);
-	if (philo->datas->number_philo % 2 != 0)
-	{
-		t_think = (philo->datas->time_to_eat * 2) - philo->datas->time_to_sleep;
-		if (t_think < 0)
-			t_think = 0;
-		custom_sleep(t_think >> 1);
-	}
-}
-
 static void	eat_routine(t_philo *philo)
 {
 	safe_sema(WAIT, philo->datas->forks, philo->datas);
 	write_state(TAKE_FIRST_FORK, philo);
 	safe_sema(WAIT, philo->datas->forks, philo->datas);
 	write_state(TAKE_SECOND_FORK, philo);
+	write_state(EATING, philo);
 	philo->last_meal = gettime(MILLISECONDS);
 	philo->number_meals++;
-	write_state(EATING, philo);
 	custom_sleep(philo->datas->time_to_eat);
+	safe_sema(POST, philo->datas->forks, philo->datas);
+	safe_sema(POST, philo->datas->forks, philo->datas);
 	if (philo->number_meals == philo->datas->number_cycles)
 		philo->is_full = true;
-	safe_sema(POST, philo->datas->forks, philo->datas);
-	safe_sema(POST, philo->datas->forks, philo->datas);
 }
 
 void	dinner_routine(t_philo *philo)
 {
-	while (gettime(MILLISECONDS) < philo->datas->simulation_start)
-		;
 	philo->last_meal = philo->datas->simulation_start;
 	safe_thread(CREATE, philo->datas, (*checker_routine), philo);
-	if (philo->datas->number_philo % 2 == 0 && philo->id % 2 == 0)
-		custom_sleep(3e4);
+	if (philo->id % 2 == 0)
+		custom_sleep(philo->datas->time_to_eat - 50);
 	while (true)
 	{
 		safe_sema(WAIT, philo->datas->stop, philo->datas);
@@ -79,8 +63,7 @@ void	dinner_routine(t_philo *philo)
 		if ((philo->datas->number_philo % 2 && philo->datas->time_to_sleep \
 		== philo->datas->time_to_eat) || (philo->datas->time_to_eat > \
 		philo->datas->time_to_sleep))
-			thinking_routine(philo);
-		thinking_routine(philo);
+			write_state(THINKING, philo);
 		if (philo->is_full)
 			break ;
 	}
