@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 14:07:07 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/21 12:40:17 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/21 12:48:41 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ static void	thinking_routine(t_philo *philo)
 {
 	long	t_think;
 
+	write_state(THINKING, philo);
 	if (philo->datas->number_philo % 2 != 0)
 	{
 		t_think = (philo->datas->time_to_eat * 2) - philo->datas->time_to_sleep;
