@@ -6,7 +6,7 @@
 /*   By: adenord <adenord@student.42mulhouse.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 14:07:07 by adenord           #+#    #+#             */
-/*   Updated: 2023/12/21 09:29:01 by adenord          ###   ########.fr       */
+/*   Updated: 2023/12/21 12:40:17 by adenord          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,20 @@ static void	eat_routine(t_philo *philo)
 		philo->is_full = true;
 }
 
+
+static void	thinking_routine(t_philo *philo)
+{
+	long	t_think;
+
+	if (philo->datas->number_philo % 2 != 0)
+	{
+		t_think = (philo->datas->time_to_eat * 2) - philo->datas->time_to_sleep;
+		if (t_think < 0)
+			t_think = 0;
+		custom_sleep(t_think >> 1);
+	}
+}
+
 void	dinner_routine(t_philo *philo)
 {
 	philo->last_meal = philo->datas->simulation_start;
@@ -63,7 +77,7 @@ void	dinner_routine(t_philo *philo)
 		if ((philo->datas->number_philo % 2 && philo->datas->time_to_sleep \
 		== philo->datas->time_to_eat) || (philo->datas->time_to_eat > \
 		philo->datas->time_to_sleep))
-			write_state(THINKING, philo);
+			thinking_routine(philo);
 		if (philo->is_full)
 			break ;
 	}
